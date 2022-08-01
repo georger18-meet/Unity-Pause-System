@@ -7,12 +7,15 @@ using UnityEngine.UI;
 public class PauseMenu : MonoBehaviour
 {
     [SerializeField] private GameObject _pauseMenu;
+    [SerializeField] private GameObject _settingsMenu;
     public bool IsPaused;
+    public bool InSettings;
 
     // Start is called before the first frame update
     void Start()
     {
         //DontDestroyOnLoad(this.gameObject);
+        PauseMode(false);
     }
 
     // Update is called once per frame
@@ -27,8 +30,8 @@ public class PauseMenu : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             TogglePause();
+            PauseMode(IsPaused);
         }
-        PauseMode(IsPaused);
     }
 
     public void TogglePause()
@@ -62,6 +65,11 @@ public class PauseMenu : MonoBehaviour
         IsPaused = paused;
         OnPause(paused);
         ChangeCursorMode(paused);
+        // Comment Following If There's No Settings Menu
+        if (!paused)
+        {
+            SetSettingsMode(false);
+        }
     }
 
     private void OnPause(bool paused)
@@ -76,6 +84,26 @@ public class PauseMenu : MonoBehaviour
             _pauseMenu.SetActive(false);
             Time.timeScale = 1;
         }
+    }
+
+    public void ToggleSettings()
+    {
+        if (InSettings)
+        {
+            _pauseMenu.SetActive(true);
+            SetSettingsMode(false);
+        }
+        else
+        {
+            _pauseMenu.SetActive(false);
+            SetSettingsMode(true);
+        }
+    }
+
+    private void SetSettingsMode(bool status)
+    {
+        InSettings = status;
+        _settingsMenu.SetActive(status);
     }
 
     public void RestartLevel()
